@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Document</title>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+            body {
+                margin: 0;
+                padding: 0;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                background-color: #2f2f2f;
+            }
+            span.timer {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%; /* Ensure each span occupies its own row */
+                margin: 5px 0; /* Add spacing between rows */
+            }
+            label {
+                font-family: "Montserrat", sans-serif;
+                font-size: x-large;
+                color: #d0d0d0;
+            }
+            h1 {
+                font-family: "Montserrat", sans-serif;
+                display: inline-block;
+                font-size: xxx-large;
+                margin: 0 10px;
+                padding: 0;
+                color: #d0d0d0;
+            }
+            h2 {
+                font-family: "Montserrat", sans-serif;
+                display: inline-block;
+                font-size: xx-large;
+                margin: 0 10px;
+                padding: 0;
+                color: #d0d0d0;
+            }
+            audio {
+                display: none;
+            }
+            button {
+                border: 0;
+                background-color: #2f2f2f;
+            }
+            button > img {
+                width: 64px;
+                height: 64px;
+            }
+            #volume {
+                accent-color: #3f3f3f;
+                width: 33vw;
+            }
+        </style>
+    </head>
+    <body>
+        <button id="lightmodetoggle"><img src="sun.png"></button>
+        <span class="timer">
+            <h2>Months:</h2>
+            <h1 id="months">00</h1>
+        </span>
+        <span class="timer">
+            <h2>Days:</h2>
+            <h1 id="days">00</h1>
+        </span>
+        <span class="timer">
+            <h2>Hours:</h2>
+            <h1 id="hours">00</h1>
+        </span>
+        <span class="timer">
+            <h2>Minutes:</h2>
+            <h1 id="minutes">00</h1>
+        </span>
+        <span class="timer">
+            <h2>Seconds:</h2>
+            <h1 id="seconds">00</h1>
+        </span>
+        <label for="volume" id="volume-label">50%</label><input id="volume" type="range" min="0" max="100">
+        <audio src="xenogenesis.mp3" id="xenogenesis"></audio>
+        <script>
+            const offsetMS = 60982;
+            function getTimeUntilNewYearWithMonths() {
+                const now = new Date();
+                const nextYear = now.getFullYear() + 1;
+                const newYear = new Date(`${nextYear}-01-01T00:00:00`);
+                // const newYear = new Date(`2024-12-01T03:26:15`);
+
+                let current = new Date(now);
+                let months = 0;
+
+                // Remaining difference in days, hours, etc.
+                const diff = newYear.getTime() - current.getTime();
+                const milliseconds = diff;
+                const seconds = Math.floor(diff / 1000) % 60;
+                const minutes = Math.floor(diff / (1000 * 60)) % 60;
+                const hours = Math.floor(diff / (1000 * 60 * 60)) % 24;
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+                // Count months until the new year
+                while (current < newYear) {
+                    const nextMonth = new Date(current.getFullYear(), current.getMonth() + 1, current.getDate(), current.getHours(), current.getMinutes(), current.getSeconds(), current.getMilliseconds());
+                    if (nextMonth > newYear) break;
+                    months++;
+                    current = nextMonth;
+                }
+
+                return {
+                    months,
+                    days,
+                    hours,
+                    minutes,
+                    seconds,
+                    milliseconds,
+                };
+            }
+            setInterval(() => {
+                const data = getTimeUntilNewYearWithMonths()
+                document.getElementById("months").innerText = String(data.months).padStart(2, "0")
+                document.getElementById("days").innerText = String(data.days).padStart(2, "0")
+                document.getElementById("hours").innerText = String(data.hours).padStart(2, "0")
+                document.getElementById("minutes").innerText = String(data.minutes).padStart(2, "0")
+                document.getElementById("seconds").innerText = String(data.seconds).padStart(2, "0")
+                if (data.milliseconds <= offsetMS && document.getElementById("xenogenesis").paused) {
+                    document.getElementById("xenogenesis").play()
+                }
+            }, 1)
+            document.getElementById("lightmodetoggle").onclick = () => {
+                if (document.getElementById("lightmodetoggle").innerHTML === "\<img src=\"sun.png\"\>") {
+                    document.getElementById("lightmodetoggle").innerHTML = "\<img src=\"moon.png\"\>"
+                    document.querySelectorAll("h1, h2, label").forEach((x => {
+                        x.style.color = "#2f2f2f"
+                    }))
+                    document.body.style.backgroundColor = "#d0d0d0"
+                    document.querySelector("button").style.backgroundColor = "#d0d0d0"
+                    document.querySelector("#volume").style.accentColor = "#c0c0c0"
+                } else {
+                    document.getElementById("lightmodetoggle").innerHTML = "\<img src=\"sun.png\"\>"
+                    document.querySelectorAll("h1, h2, label").forEach((x => {
+                        x.style.color = "#d0d0d0"
+                    }))
+                    document.body.style.backgroundColor = "#2f2f2f"
+                    document.querySelector("button").style.backgroundColor = "#2f2f2f"
+                    document.querySelector("#volume").style.accentColor = "#3f3f3f"
+                }
+            }
+            document.getElementById("volume").oninput = () => {
+                document.getElementById("volume-label").innerText = document.getElementById("volume").value + "%"
+                document.getElementById("xenogenesis").volume = document.getElementById("volume").value / 100;
+            }
+        </script>
+    </body>
+</html>
