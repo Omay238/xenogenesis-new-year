@@ -93,8 +93,8 @@
             function getTimeUntilNewYearWithMonths() {
                 const now = new Date();
                 const nextYear = now.getFullYear() + 1;
-                const newYear = new Date(`${nextYear}-01-01T00:00:00`);
-                // const newYear = new Date(`2024-12-01T03:26:15`);
+                // const newYear = new Date(`${nextYear}-01-01T00:00:00`);
+                const newYear = new Date(`{now.getFullYear()}-12-01T23:40:00`);
 
                 let current = new Date(now);
                 let months = 0;
