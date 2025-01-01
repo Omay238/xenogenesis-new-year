@@ -1,163 +1,229 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Xenogenesis New Year</title>
-        <style>
-            @import url('https://fonts.googleapis.com/css2?family=Azeret+Mono&display=swap');
-            * {
-                animation-duration: 0.5s;
-            }
-            body {
-                margin: 0;
-                padding: 0;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                min-height: 100vh;
-                background-color: #2f2f2f;
-            }
-            span.timer {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                width: 100%;
-                margin: 5px 0;
-            }
-            label {
-                font-family: "Azaret Mono", monospace;
-                font-size: x-large;
-                color: #d0d0d0;
-            }
-            h1 {
-                font-family: "Azaret Mono", monospace;
-                display: inline-block;
-                font-size: xxx-large;
-                margin: 0 10px;
-                padding: 0;
-                color: #d0d0d0;
-            }
-            h2 {
-                font-family: "Azaret Mono", monospace;
-                display: inline-block;
-                font-size: xx-large;
-                margin: 0 10px;
-                padding: 0;
-                color: #d0d0d0;
-            }
-            audio {
-                display: none;
-            }
-            button {
-                border: 0;
-                background-color: #2f2f2f;
-            }
-            button > img {
-                width: 64px;
-                height: 64px;
-            }
-            #volume {
-                accent-color: #3f3f3f;
-                width: 33vw;
-            }
-        </style>
-    </head>
-    <body>
-        <button id="lightmodetoggle"><img src="sun.png"></button>
-        <span class="timer">
-            <h2>Months:</h2>
-            <h1 id="months">00</h1>
-        </span>
-        <span class="timer">
-            <h2>Days:</h2>
-            <h1 id="days">00</h1>
-        </span>
-        <span class="timer">
-            <h2>Hours:</h2>
-            <h1 id="hours">00</h1>
-        </span>
-        <span class="timer">
-            <h2>Minutes:</h2>
-            <h1 id="minutes">00</h1>
-        </span>
-        <span class="timer">
-            <h2>Seconds:</h2>
-            <h1 id="seconds">00</h1>
-        </span>
-        <label for="volume" id="volume-label">50%</label><input id="volume" type="range" min="0" max="100">
-        <audio src="xenogenesis.mp3" id="xenogenesis"></audio>
-        <script>
-            const offsetMS = 60982;
-            function getTimeUntilNewYearWithMonths() {
-                const now = new Date();
-                const nextYear = now.getFullYear() + 1;
-                // const newYear = new Date(`${nextYear}-01-01T00:00:00`);
-                const newYear = new Date(`2024-12-01T23:45:00`);
+	<head>
+		<meta charset="UTF-8" />
+		<meta content="width=device-width, initial-scale=1" name="viewport" />
+		<title>Xenogenesis New Year</title>
+		<style>
+			@import url("https://fonts.googleapis.com/css2?family=Azeret+Mono&display=swap");
 
-                let current = new Date(now);
-                let months = 0;
+			* {
+				animation-duration: 0.5s;
+			}
 
-                // Remaining difference in days, hours, etc.
-                const diff = newYear.getTime() - current.getTime();
-                const milliseconds = diff;
-                const seconds = Math.floor(diff / 1000) % 60;
-                const minutes = Math.floor(diff / (1000 * 60)) % 60;
-                const hours = Math.floor(diff / (1000 * 60 * 60)) % 24;
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+			body {
+				margin: 0;
+				padding: 0;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				min-height: 100vh;
+				background-color: #2f2f2f;
+			}
 
-                // Count months until the new year
-                while (current < newYear) {
-                    const nextMonth = new Date(current.getFullYear(), current.getMonth() + 1, current.getDate(), current.getHours(), current.getMinutes(), current.getSeconds(), current.getMilliseconds());
-                    if (nextMonth > newYear) break;
-                    months++;
-                    current = nextMonth;
-                }
+			span.timer {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				width: 100%;
+				margin: 5px 0;
+			}
 
-                return {
-                    months,
-                    days,
-                    hours,
-                    minutes,
-                    seconds,
-                    milliseconds,
-                };
-            }
-            setInterval(() => {
-                const data = getTimeUntilNewYearWithMonths()
-                document.getElementById("months").innerText = String(data.months).padStart(2, "0")
-                document.getElementById("days").innerText = String(data.days).padStart(2, "0")
-                document.getElementById("hours").innerText = String(data.hours).padStart(2, "0")
-                document.getElementById("minutes").innerText = String(data.minutes).padStart(2, "0")
-                document.getElementById("seconds").innerText = String(data.seconds).padStart(2, "0")
-                if (data.milliseconds <= offsetMS && document.getElementById("xenogenesis").paused) {
-                    document.getElementById("xenogenesis").play()
-                }
-            }, 1)
-            document.getElementById("lightmodetoggle").onclick = () => {
-                if (document.getElementById("lightmodetoggle").innerHTML === "\<img src=\"sun.png\"\>") {
-                    document.getElementById("lightmodetoggle").innerHTML = "\<img src=\"moon.png\"\>"
-                    document.querySelectorAll("h1, h2, label").forEach((x => {
-                        x.style.color = "#2f2f2f"
-                    }))
-                    document.body.style.backgroundColor = "#d0d0d0"
-                    document.querySelector("button").style.backgroundColor = "#d0d0d0"
-                    document.querySelector("#volume").style.accentColor = "#c0c0c0"
-                } else {
-                    document.getElementById("lightmodetoggle").innerHTML = "\<img src=\"sun.png\"\>"
-                    document.querySelectorAll("h1, h2, label").forEach((x => {
-                        x.style.color = "#d0d0d0"
-                    }))
-                    document.body.style.backgroundColor = "#2f2f2f"
-                    document.querySelector("button").style.backgroundColor = "#2f2f2f"
-                    document.querySelector("#volume").style.accentColor = "#3f3f3f"
-                }
-            }
-            document.getElementById("volume").oninput = () => {
-                document.getElementById("volume-label").innerText = document.getElementById("volume").value + "%"
-                document.getElementById("xenogenesis").volume = document.getElementById("volume").value / 100;
-            }
-        </script>
-    </body>
+			label {
+				font-family: "Azaret Mono", monospace;
+				font-size: x-large;
+				color: #d0d0d0;
+			}
+
+			h1 {
+				font-family: "Azaret Mono", monospace;
+				display: inline-block;
+				font-size: xxx-large;
+				margin: 0 10px;
+				padding: 0;
+				color: #d0d0d0;
+			}
+
+			h2 {
+				font-family: "Azaret Mono", monospace;
+				display: inline-block;
+				font-size: xx-large;
+				margin: 0 10px;
+				padding: 0;
+				color: #d0d0d0;
+			}
+
+			audio {
+				display: none;
+			}
+
+			button {
+				border: 0;
+				background-color: #2f2f2f;
+			}
+
+			button>img {
+				width: 64px;
+				height: 64px;
+			}
+
+			#volume {
+				accent-color: #3f3f3f;
+				width: 33vw;
+			}
+
+			#final-timer {
+				display: none;
+			}
+
+			h3 {
+				font-family: "Azaret Mono", monospace;
+				display: inline-block;
+				font-size: 300px;
+				margin: 0 10px;
+				padding: 0;
+				color: #d0d0d0;
+			}
+
+			h4 {
+				font-family: "Azaret Mono", monospace;
+				display: inline-block;
+				font-size: 140px;
+				margin: 0 10px;
+				padding: 0;
+				color: #d0d0d0;
+			}
+		</style>
+	</head>
+
+	<body>
+		<button id="lightmodetoggle"><img src="sun.png" /></button>
+		<div id="og-timer">
+			<span class="timer">
+				<h2>Hours:</h2>
+				<h1 id="hours">00</h1>
+			</span>
+			<span class="timer">
+				<h2>Minutes:</h2>
+				<h1 id="minutes">00</h1>
+			</span>
+			<span class="timer">
+				<h2>Seconds:</h2>
+				<h1 id="seconds">00</h1>
+			</span>
+		</div>
+		<div id="final-timer">
+			<span class="timer-big">
+				<h3 id="seconds2">00</h3>
+			</span>
+		</div>
+		<h4 id="happy" style="display:none;">Happy New Years!</h4>
+		<label for="volume" id="volume-label">50%</label>
+		<input id="volume" max="100" min="0" type="range" />
+		<audio id="xenogenesis" src="xenogenesis.mp3"></audio>
+		<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+		<script>
+			const offsetMS = 61982;
+
+			function getTimeUntilNewYearWithMonths() {
+				const now = new Date();
+				const nextYear = now.getFullYear() + 1;
+				const newYear = new Date(`${nextYear}-01-01T00:00:00`);
+				// const newYear = new Date(`2024-12-31T22:51:20`);
+
+				let current = new Date(now);
+
+				const diff = newYear.getTime() - current.getTime();
+				console.log(newYear.getTime())
+				console.log(current.getTime())
+				const milliseconds = diff;
+				const seconds = Math.floor(diff / 1000) % 60;
+				const minutes = Math.floor(diff / (1000 * 60)) % 60;
+				const hours = Math.floor(diff / (1000 * 60 * 60));
+
+				return {
+					hours, minutes, seconds, milliseconds,
+				};
+			}
+
+			var hasLaunched = false;
+			setInterval(() => {
+				const data = getTimeUntilNewYearWithMonths();
+				console.log(data)
+				if (data.milliseconds <= 10000) {
+					document.getElementById("og-timer").style.display = "none";
+					document.getElementById("final-timer").style.display = "flex";
+				}
+				if (hasLaunched) {
+					document.getElementById("og-timer").style.display = "none";
+					document.getElementById("final-timer").style.display = "none";
+					document.getElementById("happy").style.display = "flex";
+				}
+				if (data.milliseconds <= 0 && !hasLaunched) {
+					hasLaunched = true;
+					var duration = 15 * 1000;
+					var animationEnd = Date.now() + duration;
+					var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+				
+					function randomInRange(min, max) {
+						return Math.random() * (max - min) + min;
+					}
+				
+					var interval = setInterval(function () {
+						var timeLeft = animationEnd - Date.now();
+				
+						if (timeLeft <= 0) {
+							return clearInterval(interval);
+						}
+				
+						var particleCount = 50 * (timeLeft / duration);
+						// since particles fall down, start a bit higher than random
+						confetti({
+							...defaults,
+							particleCount,
+							origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+						});
+						confetti({
+							...defaults,
+							particleCount,
+							origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+						});
+					}, 250);
+				}
+				document.getElementById("hours").innerText = String(data.hours).padStart(2, "0");
+				document.getElementById("minutes").innerText = String(data.minutes).padStart(2, "0");
+				document.getElementById("seconds").innerText = String(data.seconds).padStart(2, "0");
+				document.getElementById("seconds2").innerText = String(data.seconds);
+				
+				if (data.milliseconds <= offsetMS && document.getElementById("xenogenesis").paused) {
+					document.getElementById("xenogenesis").play();
+				}
+			}, 1);
+			document.getElementById("lightmodetoggle").onclick = () => {
+				if (document.getElementById("lightmodetoggle").innerHTML === "\<img src=\"sun.png\"\>") {
+					document.getElementById("lightmodetoggle").innerHTML = "\<img src=\"moon.png\"\>";
+					document.querySelectorAll("h1, h2, h3, h4, label").forEach((x) => {
+						x.style.color = "#2f2f2f";
+					});
+					document.body.style.backgroundColor = "#d0d0d0";
+					document.querySelector("button").style.backgroundColor = "#d0d0d0";
+					document.querySelector("#volume").style.accentColor = "#c0c0c0";
+				} else {
+					document.getElementById("lightmodetoggle").innerHTML = "\<img src=\"sun.png\"\>";
+					document.querySelectorAll("h1, h2, h3, h4, label").forEach((x) => {
+						x.style.color = "#d0d0d0";
+					});
+					document.body.style.backgroundColor = "#2f2f2f";
+					document.querySelector("button").style.backgroundColor = "#2f2f2f";
+					document.querySelector("#volume").style.accentColor = "#3f3f3f";
+				}
+			};
+			document.getElementById("volume").oninput = () => {
+				document.getElementById("volume-label").innerText =
+					document.getElementById("volume").value + "%";
+				document.getElementById("xenogenesis").volume = document.getElementById("volume").value / 100;
+			};
+		</script>
+	</body>
 </html>
